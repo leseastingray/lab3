@@ -342,12 +342,7 @@ namespace Yahtzee
 
         private int ScoreChance(int[] counts)
         {
-            int chanceScore = 0;
-
-            for (int i = 0; i < 6; i++)
-            {
-                chanceScore += counts[i];
-            }
+            int chanceScore = Sum(counts);
             return chanceScore;
         }
 
