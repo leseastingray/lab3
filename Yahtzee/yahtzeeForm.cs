@@ -59,7 +59,7 @@ namespace Yahtzee
             //      add random number to list
             for (int i = 0; i < 5; i++)
             {
-                int numDie = rand.Next(6);
+                numDie = rand.Next(6);
                 dice.Add(numDie);
             }
         }
@@ -69,7 +69,7 @@ namespace Yahtzee
         public void MoveRollDiceToKeep(List<int> roll, List<int> keep)
         {
             // List to hold keep die
-            List<int> keep = new List<int>();
+            keep = new List<int>();
 
             foreach (int r in roll)
             {
@@ -144,7 +144,7 @@ namespace Yahtzee
             if (two > 0)
             {
                 two = two * 2;
-                return two
+                return two;
             }
             else
                 return 0;
@@ -268,53 +268,87 @@ namespace Yahtzee
         private int ScoreFullHouse(int[] counts)
         {
             int scores2, scores3;
-            if (HasCount(2, counts, out scores2) && HasCount(3, counts, out score3s)
+            if (HasCount(2, counts, out scores2) && HasCount(3, counts, out scores3))
             {
-                Sum(counts);
+               int score = Sum(counts);
+                return score;
             }
+            else
+                return 0;
         }
 
         private int ScoreSmallStraight(int[] counts)
         {
-            // Bool to hold true or false value for Small Straight check,
+            // Bool to hold true or false value for small straight check,
             //     initialized as true
             bool isSmStraight = true;
 
             // for the first 3 slots of the counts array, incremented
             //    for the 4 slots following the index of the first index
             //         if the slot is less than 1
-            //              Small Straight check results in false value, break
-            //    if Small Straight remains true, break
+            //              small straight check results in false value, break
+            //    if small straight remains true, break
             for (int i = 0; i < 3; i++)
             {
                 for (int j = i; j < i + 4; j++)
                 {
                     if (counts[j] < 1)
                     {
-                        isSmStraight == false;
+                        isSmStraight = false;
                         break;
                     }
                 }
                 if (isSmStraight == true)
                     break;
             }
-            // if is Small Straight is true
+            // if is small straight is true
             //     return 30 points
             if (isSmStraight == true)
             {
                 int score = 30;
                 return score;
             }
+            else
+                return 0;
         }
 
         private int ScoreLargeStraight(int[] counts)
-        {   
-            
+        {
+            // Bool to hold true or false value for large straight check,
+            //    initialized as true.
+            bool isLargeStraight = true;
+
+            // for each slot of the array beginning at 0 and less than 6, incremented
+            //     if the slot is not equal to 1
+            //        large straight check results in false value, break
+            for (int i = 0; i < 6; i++)
+            {
+                if (counts[i] != 1)
+                {
+                    isLargeStraight = false;
+                    break;
+                }
+            }
+            // if large straight is true
+            //    return 40 points
+            if (isLargeStraight == true)
+            {
+                int score = 40;
+                return score;
+            }
+            else
+                return 0;
         }
 
         private int ScoreChance(int[] counts)
         {
-            return 0;
+            int chanceScore = 0;
+
+            for (int i = 0; i < 6; i++)
+            {
+                chanceScore += counts[i];
+            }
+            return chanceScore;
         }
 
         /* This method makes it "easy" to call the "right" scoring method when you click on an element
@@ -361,17 +395,26 @@ namespace Yahtzee
         // a 0 or a positive number could be an actual score
         private void ResetScoreCard(int[] scoreCard, int scoreCardCount)
         {
-            
+            // for all the slots in the score card array, incremented
+            //     set slot to 0
+            for (int i = 0; i <6; i++)
+            {
+                scoreCard[i] = 0;
+            }
+            // set score card count to 0
+            scoreCardCount = 0;
         }
 
         // this set has to do with user's scorecard UI
         private void ResetUserUIScoreCard()
         {
+            uScoreCardCount = 0;
         }
 
         // this method adds the subtotals as well as the bonus points when the user is done playing
         public void UpdateUserUIScoreCard()
         {
+
         }
 
         /* When I move a die from roll to keep, I put a -1 in the spot that the die used to be in.
@@ -496,7 +539,7 @@ namespace Yahtzee
             * Hide the keep dice
             * Hide the computer's dice
             */
-            ResetScoreCard();
+            ResetScoreCard(userScorecardArray, uScoreCardCount);
             HideAllRollDice();
             HideAllKeepDice();
             HideAllComputerKeepDice();
@@ -512,21 +555,33 @@ namespace Yahtzee
 
             // START HERE
             // clear the roll data structure
+
             // hide all of thhe roll picture boxes
+            HideAllRollDice();
 
             // roll the right number of dice
+
             // show the roll picture boxes
 
             // increment the number of rolls
+            rollCount++;
             // disable the button if you've rolled 3 times
+            if (rollCount > 2)
+            {
+                rollButton.Enabled = false;
+            }
         }
 
         private void userScorecard_DoubleClick(object sender, EventArgs e)
         {
             // move any rolled die into the keep dice
+            CollapseDice(userRollsList);
             // hide picture boxes for both roll and keep
+            HideAllRollDice();
+            HideAllKeepDice();
 
             // determine which element in the score card was clicked
+
             // score that element
             // put the score in the scorecard and the UI
             // disable this element in the score card
