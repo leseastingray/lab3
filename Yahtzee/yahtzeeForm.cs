@@ -40,21 +40,41 @@ namespace Yahtzee
         private int uScoreCardCount = 0;
 
         // you'll need an instance variable for the user's scorecard - an array of 13 ints
+        private int[] userScorecardArray = new int[13];
         // as well as an instance variable for 0 to 5 dice as the user rolls - array or list<int>?
+        private List<int> userRollsList = new List<int>(5);
         // as well as an instance variable for 0 to 5 dice that the user wants to keep - array or list<int>? 
-
+        private List<int> userKeepList = new List<int>(5);
         // this is the list of methods that I used
 
         // START WITH THESE 2
         // This method rolls numDie and puts the results in the list
         public void Roll(int numDie, List<int> dice)
         {
+            // Random number generator
+            Random rand = new Random();
+
+            // for each die starting at 0 and less than 5, incremented
+            //      generate random number between 0 and 5
+            //      add random number to list
+            for (int i = 0; i < 5; i++)
+            {
+                int numDie = rand.Next(6);
+                dice.Add(numDie);
+            }
         }
 
         // This method moves all of the rolled dice to the keep dice before scoring.  All of the dice that
         // are being scored have to be in the same list 
         public void MoveRollDiceToKeep(List<int> roll, List<int> keep)
         {
+            // List to hold keep die
+            List<int> keep = new List<int>();
+
+            foreach (int r in roll)
+            {
+                keep.Add(r);
+            }
         }
 
         #region Scoring Methods
@@ -63,11 +83,19 @@ namespace Yahtzee
          */
         private int Count(int value, List<int> dice)
         {
-            return 0;
+            // Variable and initialization for count
+            int count = 0;
+
+            foreach (int die in dice)
+            {
+                if (die == value)
+                    count++;
+            }
+            return count;
         }
 
         /* This method counts how many 1s, 2s, 3s ... 6s there are in a list of ints that represent a set of dice
-         * It takes a list of ints as it's parameter.  It should create an array of 6 integers to store the counts.
+         * It takes a list of ints as its parameter.  It should create an array of 6 integers to store the counts.
          * It should then call Count with a value of 1 and store the result in the first element of the array.
          * It should then repeat the process of calling Count with 2 - 6.
          * It returns the array of counts.
@@ -75,39 +103,112 @@ namespace Yahtzee
          */
         private int[] GetCounts(List<int> dice)
         {
-            return null;
+            // Array to store counts
+            int[] counts = new int[6];
+
+            // Count the amount of each number rolled and store result in a slot in array.
+            counts[0] = Count(1, dice);
+            counts[1] = Count(2, dice);
+            counts[2] = Count(3, dice);
+            counts[3] = Count(4, dice);
+            counts[4] = Count(5, dice);
+            counts[5] = Count(6, dice);
+            return counts;
         }
 
         /* Each of these methods takes the array of counts as a parameter and returns the score for a dice value.
          */
         private int ScoreOnes(int[] counts)
         {
-            return 0;
+            // Variable for number of 1s (slot 0 in array counts)
+            int one = counts[0];
+
+            // if one is greater than zero
+            //     return ones
+            // else return 0
+            if (one > 0)
+                return one;
+            else
+                return 0;
         }
 
         private int ScoreTwos(int[] counts)
         {
-            return 0;
+            // Variable for number of 2s (slot 1 in array counts)
+            int two = counts[1];
+
+            // if two is greater than 0
+            //    two = two * 2
+            //    return two
+            // else return 0
+            if (two > 0)
+            {
+                two = two * 2;
+                return two
+            }
+            else
+                return 0;
         }
 
         private int ScoreThrees(int[] counts)
         {
-            return 0;
+            // Variable for number of 3s (slot 2 in array counts)
+            int three = counts[2];
+
+            // if three is greater than 0
+            //    three = three * 3
+            //    return three
+            // else return 0
+
+            if (three > 0)
+            {
+                three = three * 3;
+                return three;
+            }
+            else
+                return 0;
         }
 
         private int ScoreFours(int[] counts)
         {
-            return 0;
+            // Variable for number of 4s (slot 3 in array counts)
+            int four = counts[3];
+
+            if (four > 0)
+            {
+                four = four * 4;
+                return four;
+            }
+            else
+                return 0;
         }
 
         private int ScoreFives(int[] counts)
         {
-            return 0;
+            // Variable for number of 5s (slot 4 in array counts)
+            int five = counts[4];
+
+            if (five > 0)
+            {
+                five = five * 5;
+                return five;
+            }
+            else
+                return 0;
         }
 
         private int ScoreSixes(int[] counts)
         {
-            return 0;
+            // Variable for number of 6s (slot 5 in array counts)
+            int six = counts[5];
+
+            if (six > 0)
+            {
+                six = six * 6;
+                return six;
+            }
+            else
+                return 0;
         }
 
         /* This method can be used to determine if you have 3 of a kind (or 4? or  5?).  The output parameter
@@ -133,24 +234,32 @@ namespace Yahtzee
          */ 
         private int Sum(int[] counts)
         {
-            return 0;
+            int sum = ScoreOnes(counts) + ScoreTwos(counts) + ScoreThrees(counts)
+                        + ScoreFours(counts) + ScoreFives(counts) + ScoreSixes(counts);
+            return sum;
         }
 
         /* This method calls HasCount(3...) and if there are 3 of a kind calls Sum to calculate the score.
          */ 
         private int ScoreThreeOfAKind(int[] counts)
         {
-            return 0;
+            int score;
+            HasCount(3, counts, out score);
+            return score;
         }
 
         private int ScoreFourOfAKind(int[] counts)
         {
-            return 0;
+            int score;
+            HasCount(4, counts, out score);
+            return score;
         }
 
         private int ScoreYahtzee(int[] counts)
         {
-            return 0;
+            int score;
+            HasCount(5, counts, out score);
+            return score;
         }
 
         /* This method calls HasCount(2 and HasCount(3 to determine if there's a full house.  It calls sum to 
@@ -158,17 +267,49 @@ namespace Yahtzee
          */ 
         private int ScoreFullHouse(int[] counts)
         {
-            return 0;
+            int scores2, scores3;
+            if (HasCount(2, counts, out scores2) && HasCount(3, counts, out score3s)
+            {
+                Sum(counts);
+            }
         }
 
         private int ScoreSmallStraight(int[] counts)
         {
-            return 0;
+            // Bool to hold true or false value for Small Straight check,
+            //     initialized as true
+            bool isSmStraight = true;
+
+            // for the first 3 slots of the counts array, incremented
+            //    for the 4 slots following the index of the first index
+            //         if the slot is less than 1
+            //              Small Straight check results in false value, break
+            //    if Small Straight remains true, break
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = i; j < i + 4; j++)
+                {
+                    if (counts[j] < 1)
+                    {
+                        isSmStraight == false;
+                        break;
+                    }
+                }
+                if (isSmStraight == true)
+                    break;
+            }
+            // if is Small Straight is true
+            //     return 30 points
+            if (isSmStraight == true)
+            {
+                int score = 30;
+                return score;
+            }
         }
 
         private int ScoreLargeStraight(int[] counts)
         {   
-            return 0;
+            
         }
 
         private int ScoreChance(int[] counts)
@@ -220,6 +361,7 @@ namespace Yahtzee
         // a 0 or a positive number could be an actual score
         private void ResetScoreCard(int[] scoreCard, int scoreCardCount)
         {
+            
         }
 
         // this set has to do with user's scorecard UI
@@ -281,7 +423,8 @@ namespace Yahtzee
 
         public void ShowAllKeepDie()
         {
-
+            for (int i = 0; i < 5; i++)
+                ShowKeepDie(i);
         }
 
         private PictureBox GetComputerKeepDie(int i)
@@ -310,6 +453,8 @@ namespace Yahtzee
 
         public void ShowAllComputerKeepDie()
         {
+            for (int i = 0; i < 5; i++)
+                ShowComputerKeepDie(i);
         }
 
         private PictureBox GetRollDie(int i)
@@ -338,18 +483,23 @@ namespace Yahtzee
 
         public void ShowAllRollDie()
         {
-
+            for (int i = 0; i < 5; i++)
+                ShowRollDie(i);
         }
         #endregion
 
         #region Event Handlers
         private void Form1_Load(object sender, EventArgs e)
         {
-             /* reset the user's scorecard
-             * Hide the roll dice
-             * Hide the keep dice
-             * Hide the computer's dice
-             */ 
+            /* reset the user's scorecard
+            * Hide the roll dice
+            * Hide the keep dice
+            * Hide the computer's dice
+            */
+            ResetScoreCard();
+            HideAllRollDice();
+            HideAllKeepDice();
+            HideAllComputerKeepDice();
         }
 
         private void rollButton_Click(object sender, EventArgs e)
